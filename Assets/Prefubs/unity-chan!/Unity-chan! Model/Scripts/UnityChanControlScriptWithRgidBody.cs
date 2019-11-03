@@ -16,6 +16,8 @@ namespace UnityChan
 	public class UnityChanControlScriptWithRgidBody : MonoBehaviour
 	{
 
+        protected Joystick joystick;
+
 		public float animSpeed = 1.5f;				// アニメーション再生速度設定
 		public float lookSmoother = 3.0f;			// a smoothing setting for camera motion
 		public bool useCurves = true;				// Mecanimでカーブ調整を使うか設定する
@@ -63,15 +65,21 @@ namespace UnityChan
 			// CapsuleColliderコンポーネントのHeight、Centerの初期値を保存する
 			orgColHight = col.height;
 			orgVectColCenter = col.center;
+
+            joystick = FindObjectOfType<Joystick>();
 		}
 	
 	
 		// 以下、メイン処理.リジッドボディと絡めるので、FixedUpdate内で処理を行う.
 		void FixedUpdate ()
 		{
-			float h = Input.GetAxis ("Horizontal");				// 入力デバイスの水平軸をhで定義
-			float v = Input.GetAxis ("Vertical");				// 入力デバイスの垂直軸をvで定義
-			anim.SetFloat ("Speed", v);							// Animator側で設定している"Speed"パラメタにvを渡す
+            float h;              // 入力デバイスの水平軸をhで定義
+            float v;
+            //h = Input.GetAxis ("Horizontal");				// 入力デバイスの水平軸をhで定義
+            h = joystick.Horizontal;                // 入力デバイスの水平軸をhで定義
+            //v = Input.GetAxis ("Vertical");				// 入力デバイスの垂直軸をvで定義
+            v = joystick.Vertical;              // 入力デバイスの垂直軸をvで定義
+            anim.SetFloat ("Speed", v);							// Animator側で設定している"Speed"パラメタにvを渡す
 			anim.SetFloat ("Direction", h); 						// Animator側で設定している"Direction"パラメタにhを渡す
 			anim.speed = animSpeed;								// Animatorのモーション再生速度に animSpeedを設定する
 			currentBaseState = anim.GetCurrentAnimatorStateInfo (0);	// 参照用のステート変数にBase Layer (0)の現在のステートを設定する
